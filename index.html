@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Expenses</title>
+  <meta name="theme-color" content="#2a78d6">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main id="view"></main>
+  <datalist id="merchant-list"></datalist>
+  <nav>
+    <button class="tab" data-tab="add" onclick="location.hash='#/add'"><span class="icon">＋</span>Add</button>
+    <button class="tab" data-tab="history" onclick="location.hash='#/history'"><span class="icon">☰</span>History</button>
+    <button class="tab" data-tab="analytics" onclick="location.hash='#/analytics'"><span class="icon">◔</span>Analytics</button>
+    <button class="tab" data-tab="settings" onclick="location.hash='#/settings'"><span class="icon">⚙</span>Settings</button>
+  </nav>
+  <script src="./vendor/chart.umd.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
