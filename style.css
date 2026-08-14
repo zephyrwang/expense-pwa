@@ -10,6 +10,7 @@
   --border: rgba(11, 11, 11, 0.10);
   --accent: #2a78d6;
   --danger: #d03b3b;
+  --success: #2f9e63;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +26,7 @@
     --border: rgba(255, 255, 255, 0.10);
     --accent: #3987e5;
     --danger: #e66767;
+    --success: #3dba75;
   }
 }
 
@@ -244,6 +246,41 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color:
 .rk-type { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rk-amt { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
 .rk-pct { font-variant-numeric: tabular-nums; color: var(--text-muted); text-align: right; }
+
+/* ---------- home ---------- */
+
+.home-hero { text-align: center; padding: 22px 14px; }
+.hero-total { font-size: 2.2rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hero-caption { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+.hero-stats b { font-variant-numeric: tabular-nums; }
+.btn.block { display: block; width: 100%; margin-bottom: 14px; }
+
+/* ---------- added confirmation ---------- */
+
+.confirm { text-align: center; padding-top: 24px; }
+.confirm-check {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: var(--success);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 64px;
+}
+.confirm h1 { margin-bottom: 16px; }
+.confirm-card { text-align: center; padding: 18px 14px; }
+.confirm-amount { font-size: 1.9rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-bottom: 4px; }
+.confirm-line { color: var(--text-secondary); font-size: 0.95rem; margin-top: 2px; }
 
 /* ---------- toast ---------- */
 

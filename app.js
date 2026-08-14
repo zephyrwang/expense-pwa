@@ -39,21 +39,24 @@ function merchants() {
 // ---------- router ----------
 
 const routes = {
+  home: renderHome,
   add: renderAdd,
+  added: renderAdded,
   history: renderHistory,
   analytics: renderAnalytics,
   settings: renderSettings
 };
 
 function route() {
-  const hash = location.hash.replace(/^#\//, '') || 'add';
+  const hash = location.hash.replace(/^#\//, '') || 'home';
   const [name, arg] = hash.split('/');
   if (!api.hasSettings() && name !== 'settings') {
     location.hash = '#/settings';
     return;
   }
-  const fn = name === 'edit' ? () => renderEdit(arg) : routes[name] || renderAdd;
-  tabs.forEach((t) => t.classList.toggle('active', t.dataset.tab === (name === 'edit' ? 'history' : name)));
+  const fn = name === 'edit' ? () => renderEdit(arg) : routes[name] || renderHome;
+  const tabName = name === 'edit' ? 'history' : name === 'added' ? 'add' : name;
+  tabs.forEach((t) => t.classList.toggle('active', t.dataset.tab === tabName));
   view.innerHTML = '';
   fn();
 }
@@ -183,23 +186,116 @@ function entryForm({ entry, onSave, onDelete }) {
   return f;
 }
 
+// ---------- Home ----------
+
+async function renderHome() {
+  const monthKey = agg.currentPeriodKey('month');
+  view.appendChild(el(`<h1>${agg.periodLabel(monthKey, 'month')}</h1>`));
+  const body = el(`<div class="loading">Loading…</div>`);
+  view.appendChild(body);
+  let entries;
+  try {
+    entries = await api.loadAll();
+  } catch (e) {
+    body.className = 'form-error';
+    body.textContent = e.message;
+    return;
+  }
+  body.className = '';
+  body.innerHTML = '';
+
+  const today = todayStr();
+  const monthEntries = entries.filter((e) => e.date.slice(0, 7) === monthKey);
+  const monthTotal = monthEntries.reduce((s, e) => s + e.amount, 0);
+  const todayTotal = monthEntries.filter((e) => e.date === today).reduce((s, e) => s + e.amount, 0);
+  const topType = Object.entries(agg.sumByType(entries, 'month', monthKey))
+    .sort((a, b) => b[1] - a[1])[0];
+
+  const hero = el(`
+    <section class="card home-hero">
+      <p class="hero-total"></p>
+      <p class="hero-caption">spent this month</p>
+      <div class="hero-stats">
+        <span>Today <b data-role="today"></b></span>
+        <span data-role="topwrap">Top <b data-role="top"></b></span>
+      </div>
+    </section>`);
+  hero.querySelector('.hero-total').textContent = agg.fmtUSD(monthTotal);
+  hero.querySelector('[data-role=today]').textContent = agg.fmtUSD(todayTotal);
+  if (topType) {
+    hero.querySelector('[data-role=top]').textContent = `${topType[0]} · ${agg.fmtUSD(topType[1])}`;
+  } else {
+    hero.querySelector('[data-role=topwrap]').remove();
+  }
+  body.appendChild(hero);
+
+  const addBtn = el(`<button class="btn primary block">＋ Add expense</button>`);
+  addBtn.onclick = () => { location.hash = '#/add'; };
+  body.appendChild(addBtn);
+
+  const recent = entries.slice()
+    .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || '').localeCompare(a.createdAt || ''))
+    .slice(0, 5);
+  if (!recent.length) {
+    body.appendChild(el(`<p class="empty">No entries yet — add your first expense.</p>`));
+    return;
+  }
+  body.appendChild(el(`<h2>Recent</h2>`));
+  const list = el(`<div class="day-list"></div>`);
+  for (const e of recent) {
+    const row = el(`
+      <button class="entry-row">
+        <span class="entry-main"><span class="entry-merchant"></span><span class="entry-cat"></span></span>
+        <span class="entry-amount"></span>
+      </button>`);
+    row.querySelector('.entry-merchant').textContent = e.merchant || '(no merchant)';
+    row.querySelector('.entry-cat').textContent = `${e.date} · ${e.type} · ${e.subcategory}`;
+    row.querySelector('.entry-amount').textContent = agg.fmtUSD(e.amount);
+    row.onclick = () => { location.hash = `#/edit/${e.id}`; };
+    list.appendChild(row);
+  }
+  body.appendChild(list);
+}
+
 // ---------- Add ----------
 
 function renderAdd() {
   view.appendChild(el(`<h1>Add expense</h1>`));
   const form = entryForm({
     onSave: async (fields) => {
-      await api.addEntry(fields);
-      toast('Saved');
-      // keep date + category for quick multi-entry; clear the rest
-      form.amount.value = '';
-      form.merchant.value = '';
-      form.note.value = '';
-      form.amount.focus();
+      lastAdded = await api.addEntry(fields);
+      location.hash = '#/added';
     }
   });
   view.appendChild(form);
   form.amount.focus();
+}
+
+// ---------- Added confirmation ----------
+
+let lastAdded = null;
+
+function renderAdded() {
+  if (!lastAdded) { location.hash = '#/home'; return; }
+  const e = lastAdded;
+  const box = el(`
+    <section class="confirm">
+      <div class="confirm-check" aria-hidden="true">✓</div>
+      <h1>Added successfully</h1>
+      <div class="card confirm-card">
+        <p class="confirm-amount"></p>
+        <p class="confirm-line" data-role="cat"></p>
+        <p class="confirm-line" data-role="meta"></p>
+      </div>
+      <button class="btn primary block" data-role="again">＋ Add another</button>
+      <button class="btn block" data-role="home">Go to Home</button>
+    </section>`);
+  box.querySelector('.confirm-amount').textContent = agg.fmtUSD(e.amount);
+  box.querySelector('[data-role=cat]').textContent = `${e.type} · ${e.subcategory}`;
+  box.querySelector('[data-role=meta]').textContent = [e.date, e.merchant, e.note].filter(Boolean).join(' · ');
+  box.querySelector('[data-role=again]').onclick = () => { location.hash = '#/add'; };
+  box.querySelector('[data-role=home]').onclick = () => { location.hash = '#/home'; };
+  view.appendChild(box);
 }
 
 // ---------- History ----------
@@ -527,7 +623,7 @@ function renderSettings() {
     try {
       await api.testConnection();
       toast('Connected ✓');
-      location.hash = '#/add';
+      location.hash = '#/home';
     } catch (e) {
       errEl.textContent = e.message;
       errEl.classList.remove('hidden');
