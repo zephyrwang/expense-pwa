@@ -647,4 +647,7 @@ function renderSettings() {
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js');
 }
+// Installed apps may still launch with "#/add" pinned in a cached manifest
+// start_url; a cold start should land on Home, so rewrite that hash first.
+if (location.hash === '#/add') history.replaceState(null, '', '#/home');
 route();
