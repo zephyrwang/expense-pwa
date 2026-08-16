@@ -2,7 +2,7 @@
 export const TAXONOMY = {
   'Housing': ['Rent/mortgage', 'Property tax', 'HOA fees', 'Maintenance/repair', 'Home supplies', 'Furniture/appliances'],
   'Utilities': ['Electricity', 'Water/gas', 'Internet', 'Mobile phone plan'],
-  'Eating': ['Groceries/supermarket', 'Restaurant', 'Coffee/cafe', 'Takeout/delivery', 'Bar/drinks'],
+  'Eating': ['Groceries/supermarket', 'Restaurant', 'Coffee/bar/drinks', 'Bakery', 'Takeout/delivery'],
   'Transportation': ['Car payment', 'Fuel', 'Public transit', 'Rideshare/taxi', 'Parking/tolls', 'Expressway fees', 'Car registration', 'Car maintenance', 'Car insurance'],
   'Pet': ['Pet food', 'Vet/medical', 'Grooming', 'Toys/supplies'],
   'Kids': ['Childcare/daycare', 'School tuition/fees', 'Kids clothing', 'Toys/activities', 'Kids health'],
