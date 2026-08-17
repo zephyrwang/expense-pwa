@@ -40,7 +40,7 @@ the API. No accounts, no servers, no build step.
 From your laptop terminal (replace URL and TOKEN):
 
 ```bash
-curl -sL -d '{"token":"TOKEN","action":"add","payload":{"date":"2026-08-12","amount":12.5,"type":"Eating","subcategory":"Coffee/cafe","merchant":"Test Cafe"}}' 'URL'
+curl -sL -d '{"token":"TOKEN","action":"add","payload":{"date":"2026-08-12","amount":12.5,"type":"Eating","subcategory":"Coffee/bar/drinks","merchant":"Test Cafe"}}' 'URL'
 ```
 
 You should get `{"ok":true,...}` and see the row in the sheet. A wrong token returns
