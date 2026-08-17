@@ -6,7 +6,10 @@
  * Secret: set Script Property API_TOKEN (Project Settings > Script Properties).
  *
  * Request (POST body, Content-Type: text/plain to avoid CORS preflight):
- *   { "token": "...", "action": "add"|"list"|"update"|"delete", "payload": {...} }
+ *   { "token": "...", "action": "add"|"list"|"update"|"delete"|"retirement", "payload": {...} }
+ *
+ * The "retirement" action is implemented in Retirement.gs, a second file in
+ * this same script project owned by the countdown-widget repo.
  * Response: always HTTP 200, { "ok": true, "data": ... } or { "ok": false, "error": "..." }
  */
 
@@ -59,6 +62,9 @@ function doPost(e) {
       case 'list': return json_(list_(req.payload || {}));
       case 'update': return json_(update_(req.payload || {}));
       case 'delete': return json_(remove_(req.payload || {}));
+      // Served by Retirement.gs — source of truth is the countdown-widget repo.
+      case 'retirement': return json_(retirement_());
+      case 'retirementUpdate': return json_(retirementUpdate_(req.payload || {}));
       default: return json_({ ok: false, error: 'unknown_action' });
     }
   } catch (err) {
