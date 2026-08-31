@@ -88,7 +88,11 @@ without HTTPS.)
 - **Hand-editing the sheet is OK** for values and row deletion. Never edit column A
   (`id`); rows added by hand without an id are ignored by the app.
 - **Category list** lives in `taxonomy.js` (app) and `Code.gs` (validation) — if you
-  ever change it, change both, then redeploy both.
+  ever change it, change both, then redeploy both. The app will happily show a new
+  type whose `Code.gs` half hasn't shipped, and every save under it fails with
+  `invalid_type`. Bump `CACHE_VERSION` too, or installed phones keep the old list.
+  If you have added your own code to the script project, edit the `TAXONOMY` block
+  in the Apps Script editor rather than pasting this repo's `Code.gs` over it.
 - **Security honesty:** the API is guarded only by the secret token — no rate
   limiting, no OAuth. Fine for a personal spend log; rotate the token occasionally
   (change the Script Property + Settings) if you want.
