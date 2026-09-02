@@ -1,6 +1,6 @@
 // App-shell cache only. Data (Apps Script API) is never cached — the app is
 // online-only by design. Bump CACHE_VERSION on every deploy so clients update.
-const CACHE_VERSION = 'shell-v7';
+const CACHE_VERSION = 'shell-v8';
 
 const SHELL = [
   './',

@@ -13,8 +13,7 @@ export const TAXONOMY = {
   'Entertainment': ['Movie/event tickets', 'Hobbies', 'Vacation'],
   'Education': ['Courses', 'Books', 'Certifications'],
   'Gifts & Donations': ['Gifts', 'Charity/donations'],
-  'Life insurance': ['Premium'],
-  'Financial': ['Bank fees', 'Credit card fees', 'Taxes'],
+  'Financial': ['Bank fees', 'Credit card fees', 'Life insurance', 'Taxes'],
   'Other': ['Uncategorized']
 };
 
