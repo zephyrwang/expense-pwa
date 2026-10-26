@@ -447,7 +447,9 @@ async function renderAnalytics() {
   const pieCard = el(`
     <section class="card">
       <h2>Spend by type</h2>
+      <div class="an-total"><span class="an-total-amt" data-role="total"></span><span class="an-total-caption">Total spent</span></div>
       <div class="pie-wrap"><canvas id="pie-canvas" role="img" aria-label="Spend distribution by type"></canvas></div>
+      <p class="empty" data-role="pie-empty" hidden>No entries in this period.</p>
       <ol class="ranked" data-role="ranked"></ol>
     </section>`);
   const barCard = el(`
@@ -473,6 +475,7 @@ async function renderAnalytics() {
     const totals = agg.sumByType(entries, anGranularity, anPeriod);
     const slices = agg.topWithOther(totals, 7);
     const grand = slices.reduce((s, x) => s + x.amount, 0);
+    pieCard.querySelector('[data-role=total]').textContent = agg.fmtUSD(grand);
 
     const ranked = pieCard.querySelector('[data-role=ranked]');
     ranked.innerHTML = '';
@@ -491,8 +494,10 @@ async function renderAnalytics() {
 
     if (pieChart) pieChart.destroy();
     const pieCtx = document.getElementById('pie-canvas');
+    // Hide the canvas rather than replacing it, so a later non-empty period can draw again.
+    pieCard.querySelector('.pie-wrap').hidden = !slices.length;
+    pieCard.querySelector('[data-role=pie-empty]').hidden = !!slices.length;
     if (!slices.length) {
-      pieCard.querySelector('.pie-wrap').innerHTML = '<p class="empty">No entries in this period.</p>';
       pieChart = null;
     } else {
       pieChart = new Chart(pieCtx, {

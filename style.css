@@ -229,6 +229,10 @@ input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color:
   margin-bottom: 14px;
 }
 
+.an-total { display: flex; flex-direction: column; align-items: center; margin: 4px 0 10px; }
+.an-total-amt { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.an-total-caption { color: var(--text-muted); font-size: 0.8rem; }
+
 .pie-wrap { position: relative; height: 230px; }
 .bar-wrap { position: relative; height: 220px; }
 
