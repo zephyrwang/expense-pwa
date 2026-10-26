@@ -4,21 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Expenses</title>
-  <meta name="theme-color" content="#2a78d6">
+  <meta name="theme-color" content="#fff7ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e1815" media="(prefers-color-scheme: dark)">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icons/icon-192.png">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <main id="view"></main>
   <datalist id="merchant-list"></datalist>
   <nav>
-    <button class="tab" data-tab="home" onclick="location.hash='#/home'"><span class="icon">⌂</span>Home</button>
-    <button class="tab" data-tab="add" onclick="location.hash='#/add'"><span class="icon">＋</span>Add</button>
-    <button class="tab" data-tab="history" onclick="location.hash='#/history'"><span class="icon">☰</span>History</button>
-    <button class="tab" data-tab="analytics" onclick="location.hash='#/analytics'"><span class="icon">◔</span>Analytics</button>
-    <button class="tab" data-tab="settings" onclick="location.hash='#/settings'"><span class="icon">⚙</span>Settings</button>
+    <button class="tab" data-tab="home" onclick="location.hash='#/home'"><svg class="tab-ears" viewBox="0 0 48 10" aria-hidden="true"><path d="M2 10 L9 0 L17 10 Z M31 10 L39 0 L46 10 Z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 L12 4 L20 11 V20 H14 V14 H10 V20 H4 Z"/></svg>Home</button>
+    <button class="tab" data-tab="add" onclick="location.hash='#/add'"><svg class="tab-ears" viewBox="0 0 48 10" aria-hidden="true"><path d="M2 10 L9 0 L17 10 Z M31 10 L39 0 L46 10 Z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>Add</button>
+    <button class="tab" data-tab="history" onclick="location.hash='#/history'"><svg class="tab-ears" viewBox="0 0 48 10" aria-hidden="true"><path d="M2 10 L9 0 L17 10 Z M31 10 L39 0 L46 10 Z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h9"/></svg>History</button>
+    <button class="tab" data-tab="analytics" onclick="location.hash='#/analytics'"><svg class="tab-ears" viewBox="0 0 48 10" aria-hidden="true"><path d="M2 10 L9 0 L17 10 Z M31 10 L39 0 L46 10 Z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/></svg>Analytics</button>
+    <button class="tab" data-tab="settings" onclick="location.hash='#/settings'"><svg class="tab-ears" viewBox="0 0 48 10" aria-hidden="true"><path d="M2 10 L9 0 L17 10 Z M31 10 L39 0 L46 10 Z"/></svg><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Settings</button>
   </nav>
   <script src="./vendor/chart.umd.js"></script>
   <script type="module" src="./app.js"></script>

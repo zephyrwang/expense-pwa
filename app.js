@@ -36,6 +36,106 @@ function merchants() {
   return [...seen].sort();
 }
 
+// ---------- kitty theme pieces ----------
+
+const CAT = {
+  window: './img/cat-face-window.jpg',
+  couch: './img/cat-face-couch.jpg',
+  up: './img/cat-face-up.jpg',
+  lookUp: './img/cat-look-up.jpg',
+  nap: './img/cat-nap-curl.jpg'
+};
+
+const PAW = '<ellipse cx="12" cy="16" rx="7" ry="6"/><circle cx="4" cy="8" r="3"/><circle cx="9.5" cy="3.5" r="3"/><circle cx="15" cy="3.5" r="3"/><circle cx="20" cy="8" r="3"/>';
+
+function pawSvg(cls) {
+  return `<svg class="${cls}" viewBox="0 0 24 22" aria-hidden="true">${PAW}</svg>`;
+}
+
+const PAW_TRAIL = `
+  <svg class="paws" width="64" height="18" viewBox="0 0 64 18" aria-hidden="true">
+    <g transform="translate(2 6) scale(0.5)">${PAW}</g>
+    <g transform="translate(22 0) scale(0.5)">${PAW}</g>
+    <g transform="translate(42 6) scale(0.5)">${PAW}</g>
+  </svg>`;
+
+// Round cat photo with little cat ears on the frame. earsVar names a CSS color token.
+function catFrame(src, alt, size, { lifted = false, earsVar = '--accent' } = {}) {
+  const frame = el(`
+    <div class="cat-frame${lifted ? ' lifted' : ''}" style="--size: ${size}px; --frame-ears: var(${earsVar})">
+      <svg class="ears" viewBox="0 0 100 30" aria-hidden="true" style="stroke-width: ${(300 / size).toFixed(2)}"><path d="M10 30 L18 2 L40 22 Z M90 30 L82 2 L60 22 Z"/></svg>
+      <img>
+    </div>`);
+  const img = frame.querySelector('img');
+  img.src = src;
+  img.alt = alt;
+  return frame;
+}
+
+function pageHead(title, { greeting, photo } = {}) {
+  const head = el(`<header class="page-head"><div class="titles"><h1></h1></div></header>`);
+  head.querySelector('h1').textContent = title;
+  if (greeting) {
+    const g = el(`<p class="greeting"></p>`);
+    g.textContent = greeting;
+    head.querySelector('.titles').prepend(g);
+  }
+  if (photo) head.appendChild(catFrame(photo, 'My cat', 54));
+  return head;
+}
+
+const BADGE_FILLS = ['--mint', '--sky', '--lavender', '--accent', '--butter'];
+
+function catBadge(type) {
+  const fill = BADGE_FILLS[Math.max(0, TYPES.indexOf(type)) % BADGE_FILLS.length];
+  const badge = el(`
+    <svg class="cat-badge" viewBox="0 0 40 40" aria-hidden="true" style="--badge: var(${fill})">
+      <path class="head" d="M6 18 L7 3 L17 10 Z M34 18 L33 3 L23 10 Z"/><circle class="head" cx="20" cy="23" r="15"/>
+      <text x="20" y="28.5" text-anchor="middle"></text>
+    </svg>`);
+  badge.querySelector('text').textContent = type.charAt(0);
+  return badge;
+}
+
+function entryRow(e, catLine) {
+  const row = el(`
+    <button class="entry-row">
+      <span class="entry-main"><span class="entry-merchant"></span><span class="entry-cat"></span></span>
+      <span class="entry-amount"></span>
+    </button>`);
+  row.prepend(catBadge(e.type));
+  row.querySelector('.entry-merchant').textContent = e.merchant || '(no merchant)';
+  row.querySelector('.entry-cat').textContent = catLine;
+  row.querySelector('.entry-amount').textContent = agg.fmtUSD(e.amount);
+  row.onclick = () => { location.hash = `#/edit/${e.id}`; };
+  return row;
+}
+
+// Drawn decorations for the "Purrfect!" screen: paw prints, sparkles and the
+// ginger tabby mascot cheering beside the photo. Colors come from CSS classes.
+const CONFIRM_DECOR = `
+  <svg class="decor" viewBox="0 0 300 220" aria-hidden="true">
+    <g class="k-accent" transform="translate(8 26) rotate(-20)">${PAW}</g>
+    <g class="k-sky" transform="translate(262 14) rotate(18)">${PAW}</g>
+    <g class="k-mint" transform="translate(140 0) scale(0.8)">${PAW}</g>
+    <path class="k-butter k-line" d="M44 70 l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3 Z" stroke-width="2.5" stroke-linejoin="round"/>
+    <path class="k-accent k-line" d="M262 70 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3 Z" stroke-width="2.5" stroke-linejoin="round"/>
+    <g transform="translate(222 140) scale(0.62)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">
+      <ellipse class="k-butter k-line" cx="118" cy="44" rx="10" ry="11"/>
+      <path class="k-line" d="M113 37 v4 M118 35 v4 M123 37 v4" stroke-width="2" fill="none"/>
+      <path class="k-butter k-line" d="M48 30 C48 18 56 16 58 24 C60 14 70 16 70 30 Z"/>
+      <path class="k-butter k-line" d="M22 50 L24 8 L54 30 Z M98 50 L96 8 L66 30 Z"/>
+      <path class="k-ear" d="M30 36 L30 19 L44 30 Z M90 36 L90 19 L76 30 Z" stroke="none"/>
+      <path class="k-butter k-line" d="M60 24 C80 24 96 32 104 46 C112 48 114 56 108 60 C116 64 114 74 106 76 C110 84 104 92 96 92 C92 100 80 104 60 104 C40 104 28 100 24 92 C16 92 10 84 14 76 C6 74 4 64 12 60 C6 56 8 48 16 46 C24 32 40 24 60 24 Z"/>
+      <path class="k-stripe" d="M53 30 l2 9 M60 28 v10 M67 30 l-2 9" fill="none"/>
+      <path class="k-line" d="M38 63 q6 -8 12 0 M70 63 q6 -8 12 0" fill="none"/>
+      <ellipse class="k-ear" cx="36" cy="74" rx="7" ry="4.5" stroke="none"/>
+      <ellipse class="k-ear" cx="84" cy="74" rx="7" ry="4.5" stroke="none"/>
+      <path class="k-ear k-line" d="M56 69 L64 69 L60 74 Z" stroke-width="2"/>
+      <path class="k-line" d="M52 76 q4 6 8 0 q4 6 8 0 M28 70 L10 67 M28 77 L11 79 M92 70 L110 67 M92 77 L109 79" stroke-width="2.4" fill="none"/>
+    </g>
+  </svg>`;
+
 // ---------- router ----------
 
 const routes = {
@@ -68,9 +168,9 @@ window.addEventListener('hashchange', route);
 function entryForm({ entry, onSave, onDelete }) {
   const f = el(`
     <form class="entry-form" novalidate>
-      <label class="field">
-        <span>Amount</span>
-        <input name="amount" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00" required class="amount-input">
+      <label class="field amount-field">
+        <span>How much?</span>
+        <span class="amount-row"><span class="currency" aria-hidden="true">$</span><input name="amount" type="number" inputmode="decimal" step="0.01" min="0.01" placeholder="0.00" required class="amount-input"></span>
       </label>
       <label class="field">
         <span>Date</span>
@@ -87,7 +187,7 @@ function entryForm({ entry, onSave, onDelete }) {
         <input name="note" type="text" placeholder="">
       </label>
       <p class="form-error hidden" data-role="error"></p>
-      <button type="submit" class="btn primary" data-role="save">Save</button>
+      <button type="submit" class="btn primary" data-role="save">${pawSvg('paw')}<span>Save</span></button>
     </form>`);
 
   const dl = document.getElementById('merchant-list');
@@ -98,6 +198,7 @@ function entryForm({ entry, onSave, onDelete }) {
   const subGrid = f.querySelector('[data-role=subs]');
   const errEl = f.querySelector('[data-role=error]');
   const saveBtn = f.querySelector('[data-role=save]');
+  const saveLabel = saveBtn.querySelector('span');
   let selType = entry ? entry.type : null;
   let selSub = entry ? entry.subcategory : null;
 
@@ -155,14 +256,14 @@ function entryForm({ entry, onSave, onDelete }) {
       note: f.note.value.trim()
     };
     saveBtn.disabled = true;
-    saveBtn.textContent = 'Saving…';
+    saveLabel.textContent = 'Saving…';
     try {
       await onSave(fields);
     } catch (e) {
       showError(e.message);
     } finally {
       saveBtn.disabled = false;
-      saveBtn.textContent = 'Save';
+      saveLabel.textContent = 'Save';
     }
   };
 
@@ -190,7 +291,7 @@ function entryForm({ entry, onSave, onDelete }) {
 
 async function renderHome() {
   const monthKey = agg.currentPeriodKey('month');
-  view.appendChild(el(`<h1>${agg.periodLabel(monthKey, 'month')}</h1>`));
+  view.appendChild(pageHead('My little wallet', { greeting: 'Meow, welcome back!', photo: CAT.window }));
   const body = el(`<div class="loading">Loading…</div>`);
   view.appendChild(body);
   let entries;
@@ -213,14 +314,17 @@ async function renderHome() {
 
   const hero = el(`
     <section class="card home-hero">
+      ${pawSvg('hero-paw')}
       <p class="hero-total"></p>
-      <p class="hero-caption">spent this month</p>
+      <p class="hero-caption"></p>
       <div class="hero-stats">
         <span>Today <b data-role="today"></b></span>
         <span data-role="topwrap">Top <b data-role="top"></b></span>
       </div>
     </section>`);
+  hero.prepend(catFrame(CAT.couch, 'My cat peeking over the card', 88, { lifted: true }));
   hero.querySelector('.hero-total').textContent = agg.fmtUSD(monthTotal);
+  hero.querySelector('.hero-caption').textContent = `spent in ${agg.periodLabel(monthKey, 'month')}`;
   hero.querySelector('[data-role=today]').textContent = agg.fmtUSD(todayTotal);
   if (topType) {
     hero.querySelector('[data-role=top]').textContent = `${topType[0]} · ${agg.fmtUSD(topType[1])}`;
@@ -229,7 +333,7 @@ async function renderHome() {
   }
   body.appendChild(hero);
 
-  const addBtn = el(`<button class="btn primary block">＋ Add expense</button>`);
+  const addBtn = el(`<button class="btn primary block"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add expense</button>`);
   addBtn.onclick = () => { location.hash = '#/add'; };
   body.appendChild(addBtn);
 
@@ -240,27 +344,16 @@ async function renderHome() {
     body.appendChild(el(`<p class="empty">No entries yet — add your first expense.</p>`));
     return;
   }
-  body.appendChild(el(`<h2>Recent</h2>`));
+  body.appendChild(el(`<div class="section-head"><h2>Recent</h2>${PAW_TRAIL}</div>`));
   const list = el(`<div class="day-list"></div>`);
-  for (const e of recent) {
-    const row = el(`
-      <button class="entry-row">
-        <span class="entry-main"><span class="entry-merchant"></span><span class="entry-cat"></span></span>
-        <span class="entry-amount"></span>
-      </button>`);
-    row.querySelector('.entry-merchant').textContent = e.merchant || '(no merchant)';
-    row.querySelector('.entry-cat').textContent = `${e.date} · ${e.type} · ${e.subcategory}`;
-    row.querySelector('.entry-amount').textContent = agg.fmtUSD(e.amount);
-    row.onclick = () => { location.hash = `#/edit/${e.id}`; };
-    list.appendChild(row);
-  }
+  for (const e of recent) list.appendChild(entryRow(e, `${e.date} · ${e.type} · ${e.subcategory}`));
   body.appendChild(list);
 }
 
 // ---------- Add ----------
 
 function renderAdd() {
-  view.appendChild(el(`<h1>Add expense</h1>`));
+  view.appendChild(pageHead('Add expense', { photo: CAT.up }));
   const form = entryForm({
     onSave: async (fields) => {
       lastAdded = await api.addEntry(fields);
@@ -280,16 +373,19 @@ function renderAdded() {
   const e = lastAdded;
   const box = el(`
     <section class="confirm">
-      <div class="confirm-check" aria-hidden="true">✓</div>
-      <h1>Added successfully</h1>
+      <div class="confirm-art">${CONFIRM_DECOR}</div>
+      <h1>Purrfect!</h1>
+      <p class="confirm-sub">Added successfully</p>
       <div class="card confirm-card">
         <p class="confirm-amount"></p>
         <p class="confirm-line" data-role="cat"></p>
         <p class="confirm-line" data-role="meta"></p>
       </div>
-      <button class="btn primary block" data-role="again">＋ Add another</button>
+      <button class="btn primary block" data-role="again">Add another</button>
       <button class="btn block" data-role="home">Go to Home</button>
     </section>`);
+  // Photo goes under the decor layer so the tabby mascot peeks in front of it.
+  box.querySelector('.confirm-art').prepend(catFrame(CAT.lookUp, 'My cat looking up happily', 168, { lifted: true }));
   box.querySelector('.confirm-amount').textContent = agg.fmtUSD(e.amount);
   box.querySelector('[data-role=cat]').textContent = `${e.type} · ${e.subcategory}`;
   box.querySelector('[data-role=meta]').textContent = [e.date, e.merchant, e.note].filter(Boolean).join(' · ');
@@ -322,7 +418,10 @@ async function renderHistory() {
   const picker = el(`
     <div class="period-picker">
       <button class="btn nav" data-role="prev" aria-label="Previous month">‹</button>
-      <span class="period-label" data-role="label"></span>
+      <div class="period-center">
+        <span class="period-label" data-role="label"></span>
+        <span class="month-total" data-role="total"></span>
+      </div>
       <button class="btn nav" data-role="next" aria-label="Next month">›</button>
     </div>`);
   const listWrap = el(`<div></div>`);
@@ -334,15 +433,17 @@ async function renderHistory() {
       .filter((e) => e.date.slice(0, 7) === historyMonth)
       .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt));
 
+    const totalEl = picker.querySelector('[data-role=total]');
+    totalEl.innerHTML = '';
     listWrap.innerHTML = '';
     if (!monthEntries.length) {
       listWrap.appendChild(el(`<p class="empty">No entries this month.</p>`));
       return;
     }
     const total = monthEntries.reduce((s, e) => s + e.amount, 0);
-    const totalRow = el(`<p class="month-total"></p>`);
-    totalRow.textContent = `Month total: ${agg.fmtUSD(total)}`;
-    listWrap.appendChild(totalRow);
+    const totalAmt = el(`<b></b>`);
+    totalAmt.textContent = agg.fmtUSD(total);
+    totalEl.append('Month total ', totalAmt);
 
     let currentDate = null;
     let dayList = null;
@@ -350,23 +451,14 @@ async function renderHistory() {
       if (e.date !== currentDate) {
         currentDate = e.date;
         const daySum = monthEntries.filter((x) => x.date === e.date).reduce((s, x) => s + x.amount, 0);
-        const header = el(`<div class="day-header"><span></span><span class="day-sum"></span></div>`);
+        const header = el(`<div class="day-header"><span class="day-date"></span><span class="day-sum"></span></div>`);
         header.firstElementChild.textContent = e.date;
         header.lastElementChild.textContent = agg.fmtUSD(daySum);
         listWrap.appendChild(header);
         dayList = el(`<div class="day-list"></div>`);
         listWrap.appendChild(dayList);
       }
-      const row = el(`
-        <button class="entry-row">
-          <span class="entry-main"><span class="entry-merchant"></span><span class="entry-cat"></span></span>
-          <span class="entry-amount"></span>
-        </button>`);
-      row.querySelector('.entry-merchant').textContent = e.merchant || '(no merchant)';
-      row.querySelector('.entry-cat').textContent = `${e.type} · ${e.subcategory}`;
-      row.querySelector('.entry-amount').textContent = agg.fmtUSD(e.amount);
-      row.onclick = () => { location.hash = `#/edit/${e.id}`; };
-      dayList.appendChild(row);
+      dayList.appendChild(entryRow(e, `${e.type} · ${e.subcategory}`));
     }
   }
 
@@ -378,7 +470,7 @@ async function renderHistory() {
 // ---------- Edit ----------
 
 async function renderEdit(id) {
-  view.appendChild(el(`<h1>Edit expense</h1>`));
+  view.appendChild(pageHead('Edit expense', { photo: CAT.up }));
   let entries;
   try {
     entries = await api.loadAll();
@@ -448,13 +540,21 @@ async function renderAnalytics() {
     <section class="card">
       <h2>Spend by type</h2>
       <div class="an-total"><span class="an-total-amt" data-role="total"></span><span class="an-total-caption">Total spent</span></div>
-      <div class="pie-wrap"><canvas id="pie-canvas" role="img" aria-label="Spend distribution by type"></canvas></div>
-      <p class="empty" data-role="pie-empty" hidden>No entries in this period.</p>
+      <div class="pie-wrap">
+        <canvas id="pie-canvas" role="img" aria-label="Spend distribution by type"></canvas>
+        <img class="pie-photo" alt="">
+      </div>
+      <div class="pie-empty" data-role="pie-empty" hidden>
+        <b>Shhh… cat nap in progress</b>
+        <span>No entries in this period.</span>
+      </div>
       <ol class="ranked" data-role="ranked"></ol>
     </section>`);
+  pieCard.querySelector('.pie-photo').src = CAT.up;
+  pieCard.querySelector('[data-role=pie-empty]').prepend(catFrame(CAT.nap, 'My cat curled up asleep', 150, { lifted: true, earsVar: '--sky' }));
   const barCard = el(`
     <section class="card">
-      <h2 data-role="bar-title">Spend over time</h2>
+      <div class="card-head"><h2 data-role="bar-title">Spend over time</h2>${pawSvg('paws')}</div>
       <div class="bar-wrap"><canvas id="bar-canvas" role="img" aria-label="Total spend per period"></canvas></div>
     </section>`);
   body.append(controls, pieCard, barCard);
@@ -465,6 +565,7 @@ async function renderAnalytics() {
   const css = getComputedStyle(document.documentElement);
   const inkMuted = css.getPropertyValue('--text-muted').trim();
   const gridline = css.getPropertyValue('--gridline').trim();
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
 
   function renderCharts() {
     controls.querySelectorAll('[data-g]').forEach((b) =>
@@ -508,13 +609,14 @@ async function renderAnalytics() {
             data: slices.map((s) => s.amount),
             backgroundColor: slices.map((_, i) => colors[i]),
             borderColor: surface,
-            borderWidth: 2
+            borderWidth: 3
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: '55%',
+          cutout: '58%', // leaves room for the cat photo in the middle
+
           plugins: {
             legend: { display: false },
             tooltip: {
@@ -540,8 +642,9 @@ async function renderAnalytics() {
         labels: series.map((s) => agg.periodLabel(s.key, anGranularity)),
         datasets: [{
           data: series.map((s) => s.total),
-          backgroundColor: colors[0],
-          borderRadius: { topLeft: 4, topRight: 4 },
+          // the selected period (always the last bar) stands out
+          backgroundColor: series.map((_, i) => (i === series.length - 1 ? colors[0] : colors[1])),
+          borderRadius: { topLeft: 10, topRight: 10 },
           maxBarThickness: 40
         }]
       },

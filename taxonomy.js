@@ -21,9 +21,12 @@ export const TYPES = Object.keys(TAXONOMY);
 
 // Validated categorical slots (adjacent-pair safe in this order, both modes).
 // Charts show at most 8 series: top 7 + "Other", colored in this slot order.
+// Kitty-theme candy tones, checked against CHART_SURFACE. Some light slots sit
+// below 3:1 contrast and dark slot 5↔6 is in the 6–8 CVD floor band, so the
+// ranked list under the doughnut (swatch + name + amount) must always render.
 export const SERIES_COLORS = {
-  light: ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#e34948'],
-  dark: ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#008300', '#9085e9', '#e66767']
+  light: ['#e8789a', '#4b9bd6', '#e3a21a', '#8e74d4', '#1f8c72', '#f0905c', '#3f7fc0', '#d4565c'],
+  dark: ['#d4668a', '#3f8ccc', '#b67f10', '#8268cc', '#007d5c', '#d6773f', '#3a72b5', '#c94f55']
 };
 
-export const CHART_SURFACE = { light: '#fcfcfb', dark: '#1a1a19' };
+export const CHART_SURFACE = { light: '#ffffff', dark: '#2b231f' };

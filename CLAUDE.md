@@ -89,3 +89,8 @@ creates the tab and forces column B to plain text.
   from `SERIES_COLORS` for charts — no hard-coded hex in `app.js`.
 - Charts show at most 8 series: `topWithOther(totals, 7)`, colored in palette slot
   order, which is why the palette is adjacent-pair safe in that exact sequence.
+- Visual theme is "fluffy kitty": cream page, pastel fills, chunky `--line` outlines
+  with `--shadow` drop shadows, M PLUS Rounded 1c from Google Fonts (falls back to
+  system-ui). The user's cat photos live in `img/` as small EXIF-stripped crops;
+  the originals in `cat_pic/` are gitignored and must never be committed (the
+  site is public). New photos get the same treatment and an entry in `SHELL`.
