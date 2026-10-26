@@ -1,6 +1,6 @@
 // App-shell cache only. Data (Apps Script API) is never cached — the app is
 // online-only by design. Bump CACHE_VERSION on every deploy so clients update.
-const CACHE_VERSION = 'shell-v11';
+const CACHE_VERSION = 'shell-v12';
 
 const SHELL = [
   './',
@@ -18,7 +18,11 @@ const SHELL = [
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())
+    // cache: 'reload' skips the browser's HTTP cache (GitHub Pages sends
+    // max-age=600), so a new version never re-caches the previous deploy's files.
+    caches.open(CACHE_VERSION)
+      .then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting())
   );
 });
 
