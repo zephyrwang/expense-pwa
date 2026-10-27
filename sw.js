@@ -1,6 +1,6 @@
 // App-shell cache only. Data (Apps Script API) is never cached — the app is
 // online-only by design. Bump CACHE_VERSION on every deploy so clients update.
-const CACHE_VERSION = 'shell-v13';
+const CACHE_VERSION = 'shell-v14';
 
 const SHELL = [
   './',
@@ -10,6 +10,7 @@ const SHELL = [
   './api.js',
   './taxonomy.js',
   './analytics.js',
+  './icons.js',
   './vendor/chart.umd.js',
   './manifest.webmanifest',
   './icons/icon-192.png',

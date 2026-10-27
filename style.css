@@ -21,6 +21,19 @@
   --stripe: #d9a045;
   --danger: #c0392b;
   --success: #2f9e63;
+  /* doodle icon fills (subcategory badges) */
+  --icon-line: #4b3a33;
+  --i-white: #ffffff;
+  --i-pink: #f4a3b6;
+  --i-red: #e8697a;
+  --i-yellow: #ffd66b;
+  --i-orange: #f5a25d;
+  --i-tan: #e9c9a0;
+  --i-brown: #b98257;
+  --i-green: #8fcb9b;
+  --i-blue: #8ec5e8;
+  --i-purple: #b9a2e3;
+  --i-gray: #c9c2bc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -45,6 +58,8 @@
     --stripe: #b8862f;
     --danger: #ef7d72;
     --success: #3dba75;
+    --icon-line: #1e1815;
+    --i-white: #f6eee8;
   }
 }
 
@@ -289,9 +304,24 @@ input:focus { outline: 3px solid var(--accent); outline-offset: 1px; }
   cursor: pointer;
 }
 
-.cat-badge { flex: none; width: 40px; height: 40px; }
-.cat-badge .head { fill: var(--badge); stroke: var(--line); stroke-width: 2; stroke-linejoin: round; }
-.cat-badge text { fill: var(--text-primary); font-family: inherit; font-size: 15px; font-weight: 800; }
+.cat-badge { flex: none; width: 42px; height: 42px; }
+.cat-badge .disc { fill: var(--badge); stroke: var(--line); stroke-width: 2; }
+.cat-badge .icon * { fill: none; stroke: var(--icon-line); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cat-badge .icon g { stroke: none; }
+.cat-badge .icon .thick { stroke-width: 2.2; }
+.cat-badge .icon .dash { stroke: var(--i-white); stroke-width: 1.8; }
+.cat-badge .icon .f-white { fill: var(--i-white); }
+.cat-badge .icon .f-pink { fill: var(--i-pink); }
+.cat-badge .icon .f-red { fill: var(--i-red); }
+.cat-badge .icon .f-yellow { fill: var(--i-yellow); }
+.cat-badge .icon .f-orange { fill: var(--i-orange); }
+.cat-badge .icon .f-tan { fill: var(--i-tan); }
+.cat-badge .icon .f-brown { fill: var(--i-brown); }
+.cat-badge .icon .f-green { fill: var(--i-green); }
+.cat-badge .icon .f-blue { fill: var(--i-blue); }
+.cat-badge .icon .f-purple { fill: var(--i-purple); }
+.cat-badge .icon .f-gray { fill: var(--i-gray); }
+.cat-badge .icon .f-ink { fill: var(--icon-line); }
 
 .entry-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 .entry-merchant { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

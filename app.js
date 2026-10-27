@@ -1,6 +1,7 @@
 import { TAXONOMY, TYPES, SERIES_COLORS, CHART_SURFACE } from './taxonomy.js';
 import * as api from './api.js';
 import * as agg from './analytics.js';
+import { SUB_ICONS, FALLBACK_ICON } from './icons.js';
 
 const view = document.getElementById('view');
 const tabs = document.querySelectorAll('.tab');
@@ -86,15 +87,15 @@ function pageHead(title, { greeting, photo } = {}) {
 
 const BADGE_FILLS = ['--mint', '--sky', '--lavender', '--accent', '--butter'];
 
-function catBadge(type) {
+// Pastel circle tinted by type, with a doodle icon for the subcategory.
+function catBadge(type, subcategory) {
   const fill = BADGE_FILLS[Math.max(0, TYPES.indexOf(type)) % BADGE_FILLS.length];
-  const badge = el(`
+  const icon = SUB_ICONS[subcategory] || FALLBACK_ICON;
+  return el(`
     <svg class="cat-badge" viewBox="0 0 40 40" aria-hidden="true" style="--badge: var(${fill})">
-      <path class="head" d="M6 18 L7 3 L17 10 Z M34 18 L33 3 L23 10 Z"/><circle class="head" cx="20" cy="23" r="15"/>
-      <text x="20" y="28.5" text-anchor="middle"></text>
+      <circle class="disc" cx="20" cy="20" r="18"/>
+      <g class="icon" transform="translate(7.5 7.5) scale(1.04)">${icon}</g>
     </svg>`);
-  badge.querySelector('text').textContent = type.charAt(0);
-  return badge;
 }
 
 function entryRow(e, catLine) {
@@ -103,7 +104,7 @@ function entryRow(e, catLine) {
       <span class="entry-main"><span class="entry-merchant"></span><span class="entry-cat"></span></span>
       <span class="entry-amount"></span>
     </button>`);
-  row.prepend(catBadge(e.type));
+  row.prepend(catBadge(e.type, e.subcategory));
   row.querySelector('.entry-merchant').textContent = e.merchant || '(no merchant)';
   row.querySelector('.entry-cat').textContent = catLine;
   row.querySelector('.entry-amount').textContent = agg.fmtUSD(e.amount);

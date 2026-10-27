@@ -26,10 +26,13 @@ Hosting is GitHub Pages from `main` at the repo root — pushing to `main` deplo
 
 ## Architecture
 
-Four client modules, strictly layered, imported by `app.js` only:
+Five client modules, strictly layered, imported by `app.js` only:
 
 - `taxonomy.js` — the `TAXONOMY` type → subcategory map, plus the validated chart
   palette (`SERIES_COLORS`, `CHART_SURFACE`).
+- `icons.js` — `SUB_ICONS`, one doodle SVG per subcategory for the list badges
+  (24×24 grid, fills via `f-*` classes styled in `style.css`); unknown names fall
+  back to a paw print.
 - `analytics.js` — pure aggregation. Dates are `YYYY-MM-DD` strings end to end and
   period keys (`2026-08`, `2026-Q3`, `2026`) are derived with string slicing, never
   `Date` arithmetic, so no timezone can shift a month boundary. Keep it that way.
@@ -71,7 +74,7 @@ creates the tab and forces column B to plain text.
 
 - **Taxonomy**: `TAXONOMY` exists twice — `taxonomy.js` (what the UI offers) and
   `Code.gs` (what the API accepts). Edit both, or saves under a new type fail with
-  `invalid_type`.
+  `invalid_type`. A new or renamed subcategory also needs an icon in `icons.js`.
 - **Service worker**: bump `CACHE_VERSION` in `sw.js` on *every* deploy of changed
   app files, or installed clients keep serving the old shell. Any new file that the
   app loads must also be added to the `SHELL` array. `sw.js` deliberately never
